@@ -1,0 +1,18 @@
+{
+  "name": "message-backup-parser",
+  "version": "1.0.0",
+  "description": "Parsing message backup files from various chat applications",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "run": "node dist/index.js"
+  },
+  "keywords": [
+    "parser"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^11.11.3"
+  }
+}

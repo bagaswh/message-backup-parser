@@ -1,3 +1,8 @@
+import { ScannerLINE } from './../scanner/scanner-line';
+import { RegexBuilder } from './../regex-builder';
+import { PatternsStore } from './../store/store-patterns';
+import { LocalesStore } from '../store/store-locales';
+
 export type AppType = 'line' | 'whatsapp';
 export type OSType = 'ios' | 'android';
 
@@ -18,7 +23,36 @@ export default class Parser {
 
   private _getFileInfo() {
     let fileInfo: FileInfo = { appType: null, osType: null, lang: null };
+    let firstLine = this.splitSource[0];
+    let patterns = PatternsStore.getAllPatterns();
+
+    // exhaust check every data
+    // linearly search every regex and match for each of them to firstLine string
+    for (let appType in patterns) {
+      let localesByAppName = LocalesStore.getLocalesByAppName(appType);
+      for (let localeLang in localesByAppName) {
+        for (let osType in patterns[appType]) {
+          let firstLineSignatureRegex = RegexBuilder.build(
+            patterns[appType].android.firstLineSignature,
+            undefined,
+            LocalesStore.getLocale(appType, localeLang).firstLineSignature
+          );
+          if (firstLine.match(firstLineSignatureRegex)) {
+            fileInfo = { appType: appType as AppType, osType: osType as OSType, lang: localeLang };
+            return fileInfo;
+          }
+        }
+      }
+    }
 
     return fileInfo;
+  }
+
+  public parse() {
+    switch (this.fileInfo.appType) {
+      case 'line': {
+        return new ScannerLINE(this.splitSource, this.fileInfo).scan();
+      }
+    }
   }
 }

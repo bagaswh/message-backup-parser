@@ -1,7 +1,7 @@
-import { ScannerLINE } from './../scanner/scanner-line';
 import { RegexBuilder } from './../regex-builder';
 import { PatternsStore } from './../store/store-patterns';
 import { LocalesStore } from '../store/store-locales';
+import { mapToScanner } from './map-to-scanner';
 
 export type AppType = 'line' | 'whatsapp';
 export type OSType = 'ios' | 'android';
@@ -33,7 +33,7 @@ export default class Parser {
       for (let localeLang in localesByAppName) {
         for (let osType in patterns[appType]) {
           let firstLineSignatureRegex = RegexBuilder.build(
-            patterns[appType].android.firstLineSignature,
+            patterns[appType][osType].firstLineSignature,
             undefined,
             LocalesStore.getLocale(appType, localeLang).firstLineSignature
           );
@@ -49,10 +49,11 @@ export default class Parser {
   }
 
   public parse() {
-    switch (this.fileInfo.appType) {
-      case 'line': {
-        return new ScannerLINE(this.splitSource, this.fileInfo).scan();
-      }
+    let Scanner = mapToScanner[this.fileInfo.appType];
+    if (Scanner) {
+      return new Scanner(this.splitSource, this.fileInfo).scan();
     }
+
+    return null;
   }
 }

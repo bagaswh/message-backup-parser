@@ -1,42 +1,16 @@
 import { LocaleLINE } from './../patterns/line/locales/locale-line';
-import { LocalesStore } from './../store/store-locales';
-import { PatternsStore } from './../store/store-patterns';
 import { PatternsLINE } from './../patterns/line/patterns-line';
-import { ParsedMessage, MessageGroup } from './scanner';
-import { Indexer } from '../types/types';
+import { MessageGroup, Scanner } from './scanner';
 import { FileInfo } from '../parser/parser';
-import { RegexBuilder } from '../regex-builder';
 
-export class ScannerLINE {
-  private index: number;
-  private readonly patterns: PatternsLINE;
-  private readonly data: ParsedMessage;
-  private readonly regexStore: Indexer<RegExp>;
+export class ScannerLINE extends Scanner<PatternsLINE, LocaleLINE> {
+  constructor(protected readonly source: string[], protected readonly fileInfo: FileInfo) {
+    super(source, fileInfo);
 
-  constructor(private readonly source: string[], private readonly fileInfo: FileInfo) {
-    this.index = 0;
-    this.patterns = PatternsStore.getPatterns<PatternsLINE>('line', fileInfo.osType);
-    this.regexStore = this.buildRegex();
-    this.data = { chatName: '', chatParticipants: [], dateSaved: '', groups: [], totalMessages: 0 };
+    this.data.dateSaved = '';
 
     this.setChatName();
     this.setSavedDate();
-  }
-
-  private buildRegex() {
-    let regexStore: Indexer<RegExp> = {};
-    for (let pattern in this.patterns) {
-      if (typeof this.patterns[pattern] == 'function') {
-        continue;
-      }
-      let regex = RegexBuilder.build(
-        this.patterns[pattern] as string,
-        undefined,
-        LocalesStore.getLocale<LocaleLINE>(this.fileInfo.appType, this.fileInfo.lang)[pattern]
-      );
-      regexStore[pattern] = regex;
-    }
-    return regexStore;
   }
 
   private setChatName() {
@@ -47,10 +21,12 @@ export class ScannerLINE {
   }
 
   /**
-   * Some files include a few strings after chat name string.
-   * Regex matches those string and captured in groups, which makes chat name incorrect.
+   * Some files include few strings after chat name string.
+   * Regex matches those string and captured in groups, thus get assigned into chat name,
+   * which makes chat name incorrect.
+   *
    * This function guesses the best name by checking and comparing every names that have been stored
-   * during scanning to the regex-matched string.
+   * during scanning to the assigned chat name.
    */
   private matchChatName() {
     this.data.chatParticipants.forEach(chatParticipant => {
@@ -62,9 +38,9 @@ export class ScannerLINE {
   }
 
   private setSavedDate() {
-    let secondLine = this.patterns.toDateSavedString(this.source[this.index++].match(
-      this.regexStore.dateSaved
-    ) as RegExpMatchArray);
+    let src = this.source[this.index++];
+    //console.log(src, src.match(this.regexStore.dateSaved), this.regexStore.dateSaved);
+    let secondLine = this.patterns.toDateSavedString(src.match(this.regexStore.dateSaved));
     if (secondLine) {
       this.data.dateSaved = secondLine;
     }
@@ -80,6 +56,7 @@ export class ScannerLINE {
     return this.data;
   }
 
+  // message groups are grouped by date
   private scanMessagesInGroup() {
     let messagesInGroup: MessageGroup = { dateBegin: '', messages: [] };
 
@@ -89,7 +66,7 @@ export class ScannerLINE {
 
     messagesInGroup.dateBegin = dateBegin;
 
-    // message group ends if pointer finds dateBegin string
+    // message group ends if pointer (this.index) finds dateBegin string
     while (!this.source[this.index].match(this.regexStore.dateBegin)) {
       // or end of the file
       if (this.index == this.source.length - 1) {

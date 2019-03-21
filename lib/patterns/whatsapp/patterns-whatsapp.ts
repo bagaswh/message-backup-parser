@@ -1,7 +1,11 @@
+import { DateTransformer } from './../line/patterns-line';
+import { Indexer } from './../../types/types.d';
 import { MinimumPatternDefinition, PatternsStore } from './../../store/store-patterns';
 import { Pattern } from '../../store/store-patterns';
 
-export interface PatternsWhatsApp extends MinimumPatternDefinition {
+export interface PatternsWhatsApp
+  extends MinimumPatternDefinition,
+    Indexer<string | DateTransformer> {
   encryptionNotification: string;
   missedCall: string;
   deletedMessage: string;
@@ -17,7 +21,7 @@ let iOSMessageLineStructure =
   '\\[(\\d{1,2}\\/\\d{1,2}\\/\\d{1,2} \\d{1,2}.\\d{1,2}.\\d{1,2})\\] ([\\S\\s]+?):';
 let androidMessageLineStructureNoSender = '(\\d{1,2}\\/\\d{1,2}\\/\\d{1,2} \\d{1,2}.\\d{1,2}) - ';
 let androidMessageLineStructureWithSender =
-  '(\\d{1,2}\\/\\d{1,2}\\/\\d{1,2} \\d{1,2}.\\d{1,2}) - ([\\S\\s]+): ';
+  '(\\d{1,2}\\/\\d{1,2}\\/\\d{1,2} \\d{1,2}.\\d{1,2}) - ([\\S\\s]+?): ';
 
 let invisibleSeparator = '\u200e';
 // windows | unix
@@ -41,9 +45,9 @@ export const PatternsWhatsApp: Pattern<PatternsWhatsApp> = {
     encryptionNotification: `${androidMessageLineStructureNoSender}({{fs}})`,
     missedCall: `${androidMessageLineStructureWithSender}({{fs}})`,
     deletedMessage: `${androidMessageLineStructureWithSender}({{fs}})`,
-    attachedContact: `${androidMessageLineStructureWithSender}${invisibleSeparator}([\\S\\s]+).vcf ({{fs}})`,
-    attachedDocument: `${androidMessageLineStructureWithSender}${invisibleSeparator}([\\S\\s]+).([a-z0-9]+) ({{fs}})`,
-    attachedMedia: `${androidMessageLineStructureWithSender}${invisibleSeparator}(([\\S\\s]+)-(\\d{8})-(\\d{6}).([a-z0-9]+)) ({{fs}})`,
+    attachedContact: `${androidMessageLineStructureWithSender}${invisibleSeparator}(([\\S\\s]+?).(vcf)) ({{fs}})`,
+    attachedMedia: `${androidMessageLineStructureWithSender}${invisibleSeparator}(([A-Z]{3})-(\\d{8})-(WA\\d{4}).([a-z0-9]+?)) ({{fs}})`,
+    attachedDocument: `${androidMessageLineStructureWithSender}${invisibleSeparator}([\\S\\s]+?).([a-z0-9]+?) ({{fs}})`,
     location: `[\\S\\s]${newLine}[\\S\\s]${newLine}{{fs}} : [\\S\\s]`,
     regularMessageLine: `${androidMessageLineStructureWithSender}([\\S\\s]+)`
   }

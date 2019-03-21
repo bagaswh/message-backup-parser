@@ -2,7 +2,7 @@ import { MinimumPatternDefinition } from './../../store/store-patterns';
 import { Pattern, PatternsStore } from '../../store/store-patterns';
 import { Indexer } from '../../types/types';
 
-interface DateTransformer {
+export interface DateTransformer {
   (match: RegExpMatchArray): string;
 }
 

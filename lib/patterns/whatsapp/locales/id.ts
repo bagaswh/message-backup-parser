@@ -8,8 +8,8 @@ LocalesStore.defineLocale<LocaleWhatsApp>('whatsapp', 'id', {
     'Pesan yang dikirim ke chat ini dan panggilan kini diamankan dengan enkripsi end-to-end.(?: Ketuk untuk info selengkapnya.)?',
   missedCall: 'Missed (?:video|voice) call',
   deletedMessage: '(Pesan ini telah dihapus)|(Anda telah menghapus pesan ini)',
-  attachedContact: '(:?file )?terlampir',
-  attachedMedia: '(:?file )?terlampir',
-  attachedDocument: '(:?file )?terlampir',
+  attachedContact: '\\(?(?:file ?)?terlampir\\)?',
+  attachedMedia: '\\(?(?:file ?)?terlampir\\)?',
+  attachedDocument: '\\(?(?:file ?)?terlampir\\)?',
   location: 'lokasi'
 });

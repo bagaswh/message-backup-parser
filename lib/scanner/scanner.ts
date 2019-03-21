@@ -39,7 +39,10 @@ export class Scanner<
   protected readonly data: ParsedMessage;
   protected readonly regexStore: Indexer<RegExp>;
 
-  constructor(protected readonly source: string[], protected readonly fileInfo: FileInfo) {
+  protected constructor(
+    protected readonly source: string[],
+    protected readonly fileInfo: FileInfo
+  ) {
     this.index = 0;
     this.patterns = PatternsStore.getPatterns<T>(fileInfo.appType, fileInfo.osType);
     this.regexStore = this.buildRegex();
@@ -60,5 +63,9 @@ export class Scanner<
       regexStore[pattern] = regex;
     }
     return regexStore;
+  }
+
+  public getData() {
+    return this.data;
   }
 }

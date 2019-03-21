@@ -18,10 +18,10 @@ export default class Parser {
 
   constructor(private readonly source: string) {
     this.splitSource = source.split(/\r\n|\n/);
-    this.fileInfo = this._getFileInfo();
+    this.fileInfo = this._readFileInfo();
   }
 
-  private _getFileInfo() {
+  private _readFileInfo() {
     let fileInfo: FileInfo = { appType: null, osType: null, lang: null };
     let firstLine = this.splitSource[0];
     let patterns = PatternsStore.getAllPatterns();
@@ -46,6 +46,10 @@ export default class Parser {
     }
 
     return fileInfo;
+  }
+
+  public getFileInfo() {
+    return this.fileInfo;
   }
 
   public parse() {

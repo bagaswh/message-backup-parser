@@ -46,7 +46,7 @@ export class RegexBuilder {
     let formatSpecifier = opts.formatSpecifier;
     let formatParamsIndex = 0;
     let formattedStr = str.replace(
-      new RegExp(formatSpecifier, 'g'),
+      this.regexFormatSpecifier,
       (substring: string, ...args: any[]) => {
         return formatParams[formatParamsIndex++];
       }

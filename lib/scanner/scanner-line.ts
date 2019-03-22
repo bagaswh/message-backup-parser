@@ -39,7 +39,6 @@ export class ScannerLINE extends Scanner<PatternsLINE, LocaleLINE> {
 
   private setSavedDate() {
     let src = this.source[this.index++];
-    //console.log(src, src.match(this.regexStore.dateSaved), this.regexStore.dateSaved);
     let secondLine = this.patterns.toDateSavedString(src.match(this.regexStore.dateSaved));
     if (secondLine) {
       this.data.dateSaved = secondLine;

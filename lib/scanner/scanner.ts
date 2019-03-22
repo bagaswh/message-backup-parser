@@ -30,13 +30,20 @@ export interface ParsedMessage {
 type GenericPattern = MinimumPatternDefinition & Indexer<string | DateTransformer>;
 type GenericLocale = MinimumLocaleDefinition & Indexer<string>;
 
+/**
+ * General Scanner
+ */
 export class Scanner<
   T extends GenericPattern = GenericPattern,
   U extends GenericLocale = GenericLocale
 > {
+  // points to current line
   protected index: number;
+  // patterns for corresponding app type
   protected readonly patterns: T;
+  // parsed data
   protected readonly data: ParsedMessage;
+  // used as store for regex for corresponding app type
   protected readonly regexStore: Indexer<RegExp>;
 
   protected constructor(
@@ -49,6 +56,9 @@ export class Scanner<
     this.data = { chatName: '', chatParticipants: [], groups: [], totalMessages: 0 };
   }
 
+  /**
+   * Build regexes from patterns.
+   */
   protected buildRegex() {
     let regexStore: Indexer<RegExp> = {};
     for (let pattern in this.patterns) {

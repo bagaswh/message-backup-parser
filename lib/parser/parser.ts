@@ -21,14 +21,18 @@ export default class Parser {
     this.fileInfo = this._readFileInfo();
   }
 
-  private _readFileInfo() {
+  /**
+   * Get file info by exhaust-searching every single pattern
+   * and matching them to first line of the file.
+   */
+  private _readFileInfo(): FileInfo {
     let fileInfo: FileInfo = { appType: null, osType: null, lang: null };
     let firstLine = this.splitSource[0];
     let patterns = PatternsStore.getAllPatterns();
 
-    // exhaust check every data
-    // linearly search every regex and match for each of them to firstLine string
+    // exhaust searching
     for (let appType in patterns) {
+      // only get locales by appType (app name) to avoid redundant extra searching
       let localesByAppName = LocalesStore.getLocalesByAppName(appType);
       for (let localeLang in localesByAppName) {
         for (let osType in patterns[appType]) {
@@ -52,6 +56,9 @@ export default class Parser {
     return this.fileInfo;
   }
 
+  /**
+   * Parse by using appropriate Scanner according to app type
+   */
   public parse() {
     let Scanner = mapToScanner[this.fileInfo.appType];
     if (Scanner) {

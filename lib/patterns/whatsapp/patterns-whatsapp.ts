@@ -1,3 +1,7 @@
+/**
+ * Defines message patterns of WhatsApp.
+ */
+
 import { DateTransformer } from './../line/patterns-line';
 import { Indexer } from './../../types/types.d';
 import { MinimumPatternDefinition, PatternsStore } from './../../store/store-patterns';

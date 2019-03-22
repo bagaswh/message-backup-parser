@@ -1,6 +1,6 @@
 import { FileInfo } from './../parser/parser';
 import { LocaleWhatsApp } from './../patterns/whatsapp/locales/locale-whatsapp';
-import { Scanner, Message } from './scanner';
+import { Scanner, Message, ParsedMessage } from './scanner';
 import { PatternsWhatsApp } from './../patterns/whatsapp/patterns-whatsapp';
 
 export class ScannerWhatsApp extends Scanner<PatternsWhatsApp, LocaleWhatsApp> {
@@ -14,6 +14,16 @@ export class ScannerWhatsApp extends Scanner<PatternsWhatsApp, LocaleWhatsApp> {
     this.setChatName();
   }
 
+  /**
+   * Set chat name by looking at the first line of file.
+   * If it's from iOS, it's possible to get the name since the sender name is always in the first line.
+   *
+   * Yet for Android, we would not able to get any info of chat name since there is no sender name
+   * in the first line.
+   * We make guess by looking at the second line, and get the sender name from there.
+   *
+   * // TODO: there are info we could gather by scanning the entire chat to determine the chat name, work on it!
+   */
   private setChatName() {
     let startIndex = this.fileInfo.osType == 'ios' ? 0 : 1;
     let firstLine = this.source[startIndex].match(this.regexStore.encryptionNotification);
@@ -22,6 +32,11 @@ export class ScannerWhatsApp extends Scanner<PatternsWhatsApp, LocaleWhatsApp> {
     }
   }
 
+  /**
+   * Parse attached media data if it's Android.
+   * @param regex regex name in regexStore
+   * @param match regex match array of line that contains attached media
+   */
   private parseAttachedMediaAndroid(regex: string, match: RegExpMatchArray) {
     let additionalInfo: { [key: string]: string } = {
       fullFileName: '',
@@ -33,8 +48,6 @@ export class ScannerWhatsApp extends Scanner<PatternsWhatsApp, LocaleWhatsApp> {
     };
 
     [additionalInfo.fullFileName, additionalInfo.fileType] = match.slice(3);
-    //additionalInfo.fullFileName = additionalInfo.fileName + '.' + additionalInfo.fileExtension;
-    //additionalInfo.fileExtension = match[7];
 
     if (regex == 'attachedMedia') {
       additionalInfo.fileExtension = match[7];
@@ -46,6 +59,7 @@ export class ScannerWhatsApp extends Scanner<PatternsWhatsApp, LocaleWhatsApp> {
       additionalInfo.fileExtension = match[4];
     }
 
+    // filter only gathered data
     let finalInfo: { [key: string]: string } = {};
     for (let info in additionalInfo) {
       if (additionalInfo[info]) {
@@ -53,9 +67,15 @@ export class ScannerWhatsApp extends Scanner<PatternsWhatsApp, LocaleWhatsApp> {
       }
     }
 
+    // return filtered data
     return finalInfo;
   }
 
+  /**
+   * Parse attached media data if it's iOS
+   * @param regex regex name in regexStore
+   * @param match regex match array of line that contains attached media
+   */
   private parseAttachedMediaIOS(regex: string, match: RegExpMatchArray) {
     let additionalInfo: { [key: string]: string } = {
       fullFileName: '',
@@ -92,6 +112,7 @@ export class ScannerWhatsApp extends Scanner<PatternsWhatsApp, LocaleWhatsApp> {
       ] = fileInfo;
     }
 
+    // filter only gathered data
     let finalInfo: { [key: string]: string } = {};
     for (let info in additionalInfo) {
       if (additionalInfo[info]) {
@@ -99,28 +120,38 @@ export class ScannerWhatsApp extends Scanner<PatternsWhatsApp, LocaleWhatsApp> {
       }
     }
 
+    // return filtered data
     return finalInfo;
   }
 
-  scan() {
+  /**
+   * Scan by looking each line.
+   */
+  scan(): ParsedMessage {
     while (this.index != this.source.length - 1) {
       let line = this.source[this.index];
       let match;
       let hasMatched = false;
 
+      // match current line by each of regexes in the regex store
       for (let regex in this.regexStore) {
         if ((match = line.match(this.regexStore[regex]))) {
           hasMatched = true;
           let dateSent, sender, messageContent;
 
           [dateSent, sender, messageContent] = match.slice(1);
+          // since on Android first line does not contain sender name,
+          // we set sender to '' to avoid sender being incorrectly assigned value of messageContent
+          // thus messageContent should be in match[2]
           if (this.index == 0 && this.fileInfo.osType == 'android') {
             sender = '';
             messageContent = match[2];
           }
 
+          // dateSent contains space that separates between current date and time
           let dateBegin = dateSent.split(' ')[0];
 
+          // storing sender name
           if (this.data.chatParticipants.indexOf(sender) < 0 && sender != '') {
             this.data.chatParticipants.push(sender);
           }
@@ -132,6 +163,8 @@ export class ScannerWhatsApp extends Scanner<PatternsWhatsApp, LocaleWhatsApp> {
             messageType: regex
           };
 
+          // if current line is of attached-* type,
+          // parse the attached-* data
           if (regex.match(/^attached/)) {
             messageLineData.additionalInfo =
               this.fileInfo.osType == 'ios'
@@ -139,6 +172,7 @@ export class ScannerWhatsApp extends Scanner<PatternsWhatsApp, LocaleWhatsApp> {
                 : this.parseAttachedMediaAndroid(regex, match);
           }
 
+          // grouping messages by date begin
           if (this.currentDate !== dateBegin) {
             this.data.groups.push({
               dateBegin,
@@ -154,6 +188,7 @@ export class ScannerWhatsApp extends Scanner<PatternsWhatsApp, LocaleWhatsApp> {
         }
       }
 
+      // if none of regex has matched, sure it's a message continuation of previous line
       if (!hasMatched) {
         let groups = this.data.groups;
         let currentGroup = groups[groups.length - 1];

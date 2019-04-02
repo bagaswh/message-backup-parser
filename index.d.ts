@@ -1,3 +1,5 @@
+/// <reference types="typescript" />
+
 /**
  * Used for indexing.
  */

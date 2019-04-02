@@ -1,4 +1,5 @@
 import { Scanner } from './scanner';
+import { PatternsLINE, LocaleLINE, FileInfo, ParsedMessage, MessageGroup } from '../../index';
 
 export class ScannerLINE extends Scanner<PatternsLINE, LocaleLINE> {
   constructor(protected readonly source: string[], protected readonly fileInfo: FileInfo) {
@@ -43,7 +44,7 @@ export class ScannerLINE extends Scanner<PatternsLINE, LocaleLINE> {
     this.index++;
   }
 
-  scan() {
+  scan(): ParsedMessage {
     while (this.index != this.source.length - 1) {
       this.data.groups.push(this.scanMessagesInGroup());
     }

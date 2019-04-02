@@ -1,5 +1,7 @@
 import { PatternsStore } from './../../store/store-patterns';
-export const PatternsLINE: Pattern<PatternsLINE> = {
+import { Pattern, PatternsLINE } from '../../../index';
+
+export const PatternsLINEDefinition: Pattern<PatternsLINE> = {
   ios: {
     firstLineSignature: '\\[LINE\\] {{fs}} ([\\S\\s]+)',
     beginningFile: '\\[LINE\\] {{fs}} ([\\S\\s]+)',
@@ -33,4 +35,4 @@ export const PatternsLINE: Pattern<PatternsLINE> = {
   }
 };
 
-PatternsStore.definePatterns('line', PatternsLINE);
+PatternsStore.definePatterns('line', PatternsLINEDefinition);

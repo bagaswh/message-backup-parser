@@ -1,5 +1,7 @@
 /// <reference path="../references.d.ts" />
 
+import { Indexer, Pattern, MinimumPatternDefinition, AppType, OSType } from '../../index';
+
 export class PatternsStore {
   // appName: Pattern<T>
   private static readonly store: Indexer<Pattern<{} & MinimumPatternDefinition>> = {};

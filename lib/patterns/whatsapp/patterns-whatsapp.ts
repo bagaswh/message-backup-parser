@@ -1,4 +1,5 @@
 import { PatternsStore } from './../../store/store-patterns';
+import { Pattern, PatternsWhatsApp } from '../../../index';
 
 /**
  * Defines message patterns of WhatsApp.
@@ -15,7 +16,7 @@ let invisibleSeparator = '\u200e';
 // windows | unix
 let newLine = '\\r\\n|\\n';
 
-export const PatternsWhatsApp: Pattern<PatternsWhatsApp> = {
+export const PatternsWhatsAppDefinition: Pattern<PatternsWhatsApp> = {
   ios: {
     firstLineSignature: `${iOSMessageLineStructure} ${invisibleSeparator}({{fs}})`,
     encryptionNotification: `${iOSMessageLineStructure} ${invisibleSeparator}({{fs}})`,
@@ -41,4 +42,4 @@ export const PatternsWhatsApp: Pattern<PatternsWhatsApp> = {
   }
 };
 
-PatternsStore.definePatterns('whatsapp', PatternsWhatsApp);
+PatternsStore.definePatterns('whatsapp', PatternsWhatsAppDefinition);

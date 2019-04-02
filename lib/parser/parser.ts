@@ -2,6 +2,7 @@ import { RegexBuilder } from './../regex-builder';
 import { PatternsStore } from './../store/store-patterns';
 import { LocalesStore } from '../store/store-locales';
 import { mapToScanner } from './map-to-scanner';
+import { FileInfo, AppType, OSType, ParsedMessage } from '../../index';
 
 export default class Parser {
   private readonly splitSource: string[];
@@ -50,7 +51,7 @@ export default class Parser {
   /**
    * Parse by using appropriate Scanner according to app type
    */
-  public parse() {
+  public parse(): ParsedMessage {
     let Scanner = mapToScanner[this.fileInfo.appType];
     if (Scanner) {
       return new Scanner(this.splitSource, this.fileInfo).scan();

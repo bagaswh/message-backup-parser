@@ -1,4 +1,5 @@
 import { Scanner } from './scanner';
+import { PatternsWhatsApp, LocaleWhatsApp, FileInfo, ParsedMessage, Message } from '../../index';
 
 export class ScannerWhatsApp extends Scanner<PatternsWhatsApp, LocaleWhatsApp> {
   // tracking which date is currently being scanned

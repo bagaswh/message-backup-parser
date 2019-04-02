@@ -1,6 +1,7 @@
 import { PatternsStore } from './../store/store-patterns';
 import { LocalesStore } from '../store/store-locales';
 import { RegexBuilder } from '../regex-builder';
+import { GenericPattern, GenericLocale, ParsedMessage, Indexer, FileInfo } from '../../index';
 
 /**
  * General Scanner

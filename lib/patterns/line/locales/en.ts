@@ -1,3 +1,4 @@
+import { LocaleLINE } from './../../../../index.d';
 import { LocalesStore } from '../../../store/store-locales';
 
 LocalesStore.defineLocale<LocaleLINE>('line', 'en', {

@@ -1,8 +1,9 @@
 {
   "name": "message-backup-parser",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Parsing message backup files from various chat applications",
   "main": "dist/index.js",
+  "types": "./index.d.ts",
   "scripts": {
     "test": "node __tests__/test.js"
   },
@@ -14,6 +15,7 @@
   "devDependencies": {
     "@types/node": "^11.11.3",
     "ts-loader": "^5.3.3",
+    "typescript": "^3.4.1",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.3.0",
     "webpack-node-externals": "^1.7.2"

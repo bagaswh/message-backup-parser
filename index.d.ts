@@ -3,7 +3,7 @@
 /**
  * Used for indexing.
  */
-interface Indexer<T> {
+export interface Indexer<T> {
   [index: string]: T;
   [index: number]: T;
 }
@@ -12,14 +12,14 @@ interface Indexer<T> {
  * Types of apps and OS.
  */
 
-type AppType = 'line' | 'whatsapp';
-type OSType = 'ios' | 'android';
+export type AppType = 'line' | 'whatsapp';
+export type OSType = 'ios' | 'android';
 
 /**
  * Backup file info.
  */
 
-interface FileInfo {
+export interface FileInfo {
   appType: AppType | null;
   osType: OSType | null;
   lang: string | null;
@@ -29,33 +29,33 @@ interface FileInfo {
  * Locales and Patterns.
  */
 
-type GenericLocale = MinimumLocaleDefinition & Indexer<string>;
-type GenericPattern = MinimumPatternDefinition & Indexer<string | DateTransformer>;
+export type GenericLocale = MinimumLocaleDefinition & Indexer<string>;
+export type GenericPattern = MinimumPatternDefinition & Indexer<string | DateTransformer>;
 
-interface Locale<T extends MinimumLocaleDefinition> extends Indexer<T> {
+export interface Locale<T extends MinimumLocaleDefinition> extends Indexer<T> {
   // lang: localeDefinition
   // lang: T & MinimumLocaleDefinition
 }
 
-interface Pattern<T extends MinimumPatternDefinition> extends Indexer<T> {
+export interface Pattern<T extends MinimumPatternDefinition> extends Indexer<T> {
   ios: T;
   android: T;
 }
 
-interface MinimumLocaleDefinition {
+export interface MinimumLocaleDefinition {
   firstLineSignature: string;
 }
 
-interface MinimumPatternDefinition {
+export interface MinimumPatternDefinition {
   firstLineSignature: string;
 }
 
-interface LocaleLINE extends MinimumLocaleDefinition, Indexer<string> {
+export interface LocaleLINE extends MinimumLocaleDefinition, Indexer<string> {
   beginningFile: string;
   dateSaved: string;
 }
 
-interface LocaleWhatsApp extends MinimumLocaleDefinition, Indexer<string> {
+export interface LocaleWhatsApp extends MinimumLocaleDefinition, Indexer<string> {
   encryptionNotification: string;
   missedCall: string;
   deletedMessage: string;
@@ -65,11 +65,11 @@ interface LocaleWhatsApp extends MinimumLocaleDefinition, Indexer<string> {
   location: string;
 }
 
-interface DateTransformer {
+export interface DateTransformer {
   (match: RegExpMatchArray): string;
 }
 
-interface PatternsLINE extends MinimumPatternDefinition, Indexer<string | DateTransformer> {
+export interface PatternsLINE extends MinimumPatternDefinition, Indexer<string | DateTransformer> {
   firstLineSignature: string;
 
   beginningFile: string;
@@ -82,7 +82,9 @@ interface PatternsLINE extends MinimumPatternDefinition, Indexer<string | DateTr
   toDateSavedString(match: RegExpMatchArray): string;
 }
 
-interface PatternsWhatsApp extends MinimumPatternDefinition, Indexer<string | DateTransformer> {
+export interface PatternsWhatsApp
+  extends MinimumPatternDefinition,
+    Indexer<string | DateTransformer> {
   encryptionNotification: string;
   missedCall: string;
   deletedMessage: string;
@@ -97,7 +99,7 @@ interface PatternsWhatsApp extends MinimumPatternDefinition, Indexer<string | Da
  * Parsed message data.
  */
 
-interface Message {
+export interface Message {
   dateSent: string;
   messageContent: string;
   messageType?: string;
@@ -105,15 +107,29 @@ interface Message {
   additionalInfo?: { [key: string]: string };
 }
 
-interface MessageGroup {
+export interface MessageGroup {
   dateBegin: string;
   messages: Message[];
 }
 
-interface ParsedMessage {
+export interface ParsedMessage {
   chatName: string;
   chatParticipants: string[];
   groups: MessageGroup[];
   totalMessages: number;
   dateSaved?: string;
 }
+
+/** main module */
+export interface ParserStatic {
+  new (source: string): ParserInterface;
+}
+
+export interface ParserInterface {
+  getFileInfo(): FileInfo;
+  parse(): ParsedMessage;
+}
+
+declare const Parser: ParserStatic;
+
+export { Parser };

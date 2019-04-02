@@ -1,3 +1,4 @@
+import { LocaleWhatsApp } from './../../../../index.d';
 /**
  * Defines locale for WhatsApp.
  */

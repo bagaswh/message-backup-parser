@@ -1,5 +1,7 @@
 /// <reference path="../references.d.ts" />
 
+import { Indexer, Locale, MinimumLocaleDefinition } from '../../index';
+
 export class LocalesStore {
   // appName: Locale<T>
   private static readonly store: Indexer<Locale<{} & MinimumLocaleDefinition>> = {};

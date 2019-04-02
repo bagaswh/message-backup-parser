@@ -1,7 +1,4 @@
-import { LocaleLINE } from './../patterns/line/locales/locale-line';
-import { PatternsLINE } from './../patterns/line/patterns-line';
-import { MessageGroup, Scanner } from './scanner';
-import { FileInfo } from '../parser/parser';
+import { Scanner } from './scanner';
 
 export class ScannerLINE extends Scanner<PatternsLINE, LocaleLINE> {
   constructor(protected readonly source: string[], protected readonly fileInfo: FileInfo) {

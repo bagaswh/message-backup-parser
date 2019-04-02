@@ -3,15 +3,6 @@ import { PatternsStore } from './../store/store-patterns';
 import { LocalesStore } from '../store/store-locales';
 import { mapToScanner } from './map-to-scanner';
 
-export type AppType = 'line' | 'whatsapp';
-export type OSType = 'ios' | 'android';
-
-export interface FileInfo {
-  appType: AppType | null;
-  osType: OSType | null;
-  lang: string | null;
-}
-
 export default class Parser {
   private readonly splitSource: string[];
   private readonly fileInfo: FileInfo;

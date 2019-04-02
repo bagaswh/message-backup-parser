@@ -1,24 +1,4 @@
-import { MinimumPatternDefinition } from './../../store/store-patterns';
-import { Pattern, PatternsStore } from '../../store/store-patterns';
-import { Indexer } from '../../types/types';
-
-export interface DateTransformer {
-  (match: RegExpMatchArray): string;
-}
-
-export interface PatternsLINE extends MinimumPatternDefinition, Indexer<string | DateTransformer> {
-  firstLineSignature: string;
-
-  beginningFile: string;
-  dateSaved: string;
-  dateBegin: string;
-  messageLine: string;
-  alternateMessageLine: string;
-
-  toDateBeginString(match: RegExpMatchArray): string;
-  toDateSavedString(match: RegExpMatchArray): string;
-}
-
+import { PatternsStore } from './../../store/store-patterns';
 export const PatternsLINE: Pattern<PatternsLINE> = {
   ios: {
     firstLineSignature: '\\[LINE\\] {{fs}} ([\\S\\s]+)',

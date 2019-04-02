@@ -1,34 +1,6 @@
-import { DateTransformer } from './../patterns/line/patterns-line';
-import { MinimumLocaleDefinition } from './../store/store-locales';
-import { PatternsStore, MinimumPatternDefinition } from './../store/store-patterns';
-import { FileInfo } from './../parser/parser';
-import { Indexer } from './../types/types.d';
+import { PatternsStore } from './../store/store-patterns';
 import { LocalesStore } from '../store/store-locales';
 import { RegexBuilder } from '../regex-builder';
-
-export interface Message {
-  dateSent: string;
-  messageContent: string;
-  messageType?: string;
-  sender?: string;
-  additionalInfo?: { [key: string]: string };
-}
-
-export interface MessageGroup {
-  dateBegin: string;
-  messages: Message[];
-}
-
-export interface ParsedMessage {
-  chatName: string;
-  chatParticipants: string[];
-  groups: MessageGroup[];
-  totalMessages: number;
-  dateSaved?: string;
-}
-
-type GenericPattern = MinimumPatternDefinition & Indexer<string | DateTransformer>;
-type GenericLocale = MinimumLocaleDefinition & Indexer<string>;
 
 /**
  * General Scanner

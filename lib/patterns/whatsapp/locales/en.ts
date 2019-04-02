@@ -2,7 +2,6 @@
  * Defines locale for WhatsApp.
  */
 
-import { LocaleWhatsApp } from './locale-whatsapp';
 import { LocalesStore } from '../../../store/store-locales';
 
 LocalesStore.defineLocale<LocaleWhatsApp>('whatsapp', 'en', {

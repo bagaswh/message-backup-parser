@@ -1,4 +1,3 @@
-import { Indexer } from './../types/types.d';
 import { ScannerWhatsApp } from './../scanner/scanner-whatsapp';
 import { ScannerLINE } from './../scanner/scanner-line';
 

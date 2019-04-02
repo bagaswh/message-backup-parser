@@ -4,8 +4,7 @@
   "description": "Parsing message backup files from various chat applications",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "run": "node dist/index.js"
+    "test": "node __tests__/test.js"
   },
   "keywords": [
     "parser"

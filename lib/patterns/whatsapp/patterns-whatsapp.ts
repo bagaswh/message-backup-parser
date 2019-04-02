@@ -1,24 +1,8 @@
+import { PatternsStore } from './../../store/store-patterns';
+
 /**
  * Defines message patterns of WhatsApp.
  */
-
-import { DateTransformer } from './../line/patterns-line';
-import { Indexer } from './../../types/types.d';
-import { MinimumPatternDefinition, PatternsStore } from './../../store/store-patterns';
-import { Pattern } from '../../store/store-patterns';
-
-export interface PatternsWhatsApp
-  extends MinimumPatternDefinition,
-    Indexer<string | DateTransformer> {
-  encryptionNotification: string;
-  missedCall: string;
-  deletedMessage: string;
-  regularMessageLine: string;
-  attachedContact: string;
-  attachedMedia: string;
-  attachedDocument: string;
-  location: string;
-}
 
 // up-to sender name (semicolon/dash included)
 let iOSMessageLineStructure =

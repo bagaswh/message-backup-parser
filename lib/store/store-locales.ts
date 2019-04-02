@@ -1,25 +1,5 @@
 /// <reference path="../references.d.ts" />
 
-import { Indexer } from '../types/types';
-import { LocaleLINE } from '../patterns/line/locales/locale-line';
-
-export interface MinimumLocaleDefinition {
-  firstLineSignature: string;
-}
-
-export interface Locale<T extends MinimumLocaleDefinition> extends Indexer<T> {
-  // lang: localeDefinition
-  // lang: T & MinimumLocaleDefinition
-}
-
-let x: Locale<LocaleLINE> = {
-  en: {
-    firstLineSignature: 'a',
-    beginningFile: 'a',
-    dateSaved: 'as'
-  }
-};
-
 export class LocalesStore {
   // appName: Locale<T>
   private static readonly store: Indexer<Locale<{} & MinimumLocaleDefinition>> = {};

@@ -1,5 +1,3 @@
-import { Indexer } from './types/types';
-
 // using hash value to map between regex string to regex value, used for caching
 // hash value is computed from the regex string itself
 // https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
@@ -43,7 +41,6 @@ export class RegexBuilder {
     },
     ...formatParams: string[]
   ) {
-    let formatSpecifier = opts.formatSpecifier;
     let formatParamsIndex = 0;
     let formattedStr = str.replace(
       this.regexFormatSpecifier,

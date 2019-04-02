@@ -1,4 +1,3 @@
-import { LocaleLINE } from './locale-line';
 import { LocalesStore } from '../../../store/store-locales';
 
 LocalesStore.defineLocale<LocaleLINE>('line', 'id', {

@@ -1,17 +1,5 @@
 /// <reference path="../references.d.ts" />
 
-import { AppType, OSType } from './../parser/parser';
-import { Indexer } from '../types/types';
-
-export interface MinimumPatternDefinition {
-  firstLineSignature: string;
-}
-
-export interface Pattern<T extends MinimumPatternDefinition> extends Indexer<T> {
-  ios: T;
-  android: T;
-}
-
 export class PatternsStore {
   // appName: Pattern<T>
   private static readonly store: Indexer<Pattern<{} & MinimumPatternDefinition>> = {};

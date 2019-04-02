@@ -1,6 +1,5 @@
 /__tests__
 /examples
-/node_modules
 
 /lib/app.ts
 /lib/file-reader.ts

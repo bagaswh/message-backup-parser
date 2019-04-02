@@ -1,11 +1,8 @@
 const path = require('path');
-const nodeExternals = require('webpack-node-externals');
 
 module.exports = {
   target: 'node',
-  externals: [nodeExternals()],
-  entry: './lib/app.ts',
-  devtool: 'inline-source-map',
+  entry: './lib/index.ts',
   module: {
     rules: [{
       test: /\.tsx?$/,
@@ -18,9 +15,9 @@ module.exports = {
   },
   output: {
     filename: 'index.js',
-    path: path.resolve(__dirname, 'dist')
-  },
-  node: {
-    fs: 'empty'
+    path: path.resolve(__dirname, 'dist'),
+    library: 'message-backup-parser',
+    libraryTarget: 'umd',
+    umdNamedDefine: true
   }
 };

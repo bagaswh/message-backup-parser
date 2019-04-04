@@ -93,20 +93,30 @@ export interface PatternsWhatsApp
   attachedMedia: string;
   attachedDocument: string;
   location: string;
+
+  toDateBeginString(match: RegExpMatchArray): string;
 }
 
 /**
  * Parsed message data.
  */
 
+export interface AdditionalInfo extends Indexer<string> {
+  fullFileName: string;
+  fileID: string;
+  fileType: string;
+  fileExtension: string;
+  fileName?: string;
+  contactName?: string;
+}
+
 export interface Message {
   dateSent: string;
   messageContent: string;
   messageType?: string;
   sender?: string;
-  additionalInfo?: { [key: string]: string };
+  additionalInfo?: AdditionalInfo;
 }
-
 export interface MessageGroup {
   dateBegin: string;
   messages: Message[];

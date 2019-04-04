@@ -11,10 +11,12 @@ export const PatternsLINEDefinition: Pattern<PatternsLINE> = {
     alternateMessageLine: '(\\d{1,2}\\:\\d{1,2})\\t([\\S\\s]+? left the chat.)',
 
     toDateBeginString(match: RegExpMatchArray) {
-      return `${match[1]}, ${match[4]}/${match[3]}/${match[5]}`;
+      return new Date(`${match[1]}, ${match[4]}/${match[3]}/${match[5]}`).toDateString();
     },
     toDateSavedString(match: RegExpMatchArray) {
-      return `${match[3]}/${match[2]}/${match[4]} ${match[5].replace('.', ':')}`;
+      return new Date(
+        `${match[3]}/${match[2]}/${match[4]} ${match[5].replace('.', ':')}`
+      ).toDateString();
     }
   },
 
@@ -27,10 +29,10 @@ export const PatternsLINEDefinition: Pattern<PatternsLINE> = {
     alternateMessageLine: '(\\d{1,2}\\:\\d{1,2})\\t([\\S\\s]+?) left the chat.',
 
     toDateBeginString(match: RegExpMatchArray) {
-      return `${match[5]}, ${match[3]}/${match[4]}/${match[2]}`;
+      return new Date(`${match[5]}, ${match[3]}/${match[4]}/${match[2]}`).toDateString();
     },
     toDateSavedString(match: RegExpMatchArray) {
-      return `${match[3]}/${match[4]}/${match[2]} ${match[5]}`;
+      return new Date(`${match[3]}/${match[4]}/${match[2]} ${match[5]}`).toDateString();
     }
   }
 };

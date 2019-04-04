@@ -1,5 +1,21 @@
+import { AdditionalInfo } from './../../index.d';
 import { Scanner } from './scanner';
-import { PatternsWhatsApp, LocaleWhatsApp, FileInfo, ParsedMessage, Message } from '../../index';
+import {
+  PatternsWhatsApp,
+  LocaleWhatsApp,
+  FileInfo,
+  ParsedMessage,
+  Message,
+  Indexer
+} from '../../index';
+
+// map file types (Android) to iOS
+// we use iOS file types as our generic
+const mapFileTypes: Indexer<string> = {
+  VID: 'VIDEO',
+  IMG: 'PHOTO',
+  STK: 'STICKER'
+};
 
 export class ScannerWhatsApp extends Scanner<PatternsWhatsApp, LocaleWhatsApp> {
   // tracking which date is currently being scanned
@@ -36,7 +52,7 @@ export class ScannerWhatsApp extends Scanner<PatternsWhatsApp, LocaleWhatsApp> {
    * @param match regex match array of line that contains attached media
    */
   private parseAttachedMediaAndroid(regex: string, match: RegExpMatchArray) {
-    let additionalInfo: { [key: string]: string } = {
+    let additionalInfo: AdditionalInfo = {
       fullFileName: '',
       fileID: '',
       fileType: '',
@@ -50,15 +66,19 @@ export class ScannerWhatsApp extends Scanner<PatternsWhatsApp, LocaleWhatsApp> {
     if (regex == 'attachedMedia') {
       additionalInfo.fileExtension = match[7];
       additionalInfo.fileID = match[6];
+      additionalInfo.fileType = mapFileTypes[additionalInfo.fileType];
     } else if (regex == 'attachedContact') {
       additionalInfo.fileExtension = match[5];
       additionalInfo.contactName = match[4];
+      additionalInfo.fileType = 'CONTACT';
     } else if (regex == 'attachedDocument') {
       additionalInfo.fileExtension = match[4];
+      additionalInfo.fileType = 'DOCUMENT';
     }
 
     // filter only gathered data
-    let finalInfo: { [key: string]: string } = {};
+    // @ts-ignore
+    let finalInfo: AdditionalInfo = {};
     for (let info in additionalInfo) {
       if (additionalInfo[info]) {
         finalInfo[info] = additionalInfo[info];
@@ -74,8 +94,8 @@ export class ScannerWhatsApp extends Scanner<PatternsWhatsApp, LocaleWhatsApp> {
    * @param regex regex name in regexStore
    * @param match regex match array of line that contains attached media
    */
-  private parseAttachedMediaIOS(regex: string, match: RegExpMatchArray) {
-    let additionalInfo: { [key: string]: string } = {
+  private parseAttachedMediaIOS(regex: string, match: RegExpMatchArray): AdditionalInfo {
+    let additionalInfo: AdditionalInfo = {
       fullFileName: '',
       fileID: '',
       fileType: '',
@@ -98,6 +118,7 @@ export class ScannerWhatsApp extends Scanner<PatternsWhatsApp, LocaleWhatsApp> {
         additionalInfo.fileName,
         additionalInfo.fileExtension
       ] = fileInfo.slice();
+      additionalInfo.fileType = 'DOCUMENT';
     }
 
     if (regex == 'attachedContact') {
@@ -108,10 +129,12 @@ export class ScannerWhatsApp extends Scanner<PatternsWhatsApp, LocaleWhatsApp> {
         additionalInfo.contactName,
         additionalInfo.fileExtension
       ] = fileInfo;
+      additionalInfo.fileType = 'CONTACT';
     }
 
     // filter only gathered data
-    let finalInfo: { [key: string]: string } = {};
+    // @ts-ignore
+    let finalInfo: AdditionalInfo = {};
     for (let info in additionalInfo) {
       if (additionalInfo[info]) {
         finalInfo[info] = additionalInfo[info];
@@ -147,7 +170,8 @@ export class ScannerWhatsApp extends Scanner<PatternsWhatsApp, LocaleWhatsApp> {
           }
 
           // dateSent contains space that separates between current date and time
-          let dateBegin = dateSent.split(' ')[0];
+          let [dateBegin, timeSent] = dateSent.split(' ');
+          dateBegin = this.patterns.toDateBeginString(match);
 
           // storing sender name
           if (this.data.chatParticipants.indexOf(sender) < 0 && sender != '') {
@@ -155,7 +179,7 @@ export class ScannerWhatsApp extends Scanner<PatternsWhatsApp, LocaleWhatsApp> {
           }
 
           let messageLineData: Message = {
-            dateSent,
+            dateSent: timeSent,
             sender,
             messageContent,
             messageType: regex

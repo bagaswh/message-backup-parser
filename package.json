@@ -1,11 +1,12 @@
 {
   "name": "message-backup-parser",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Parsing message backup files from various chat applications",
   "main": "dist/index.js",
   "types": "./index.d.ts",
   "scripts": {
-    "test": "node __tests__/test.js"
+    "test": "node __tests__/test.js",
+    "test-browser": "node __tests__/test-browser.js"
   },
   "keywords": [
     "parser"
